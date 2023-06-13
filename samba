@@ -1,0 +1,28 @@
+sudo apt-get update
+#install sambe  
+1 => sudo apt-get install samba
+
+#check the status of the Samba services
+2 => systemctl status smbd nmbd
+
+#add new user
+3 => useradd testsamba
+4 => passwd testsamba
+
+#make new directory to be share with windows
+5 => mkdir /home/testsamba
+6 => mkdir /home/testsamba/mydir
+
+#add the file to samba config
+7 => nano /etc/samba/smb.conf
+All down under profiles and printers
+[mydir]
+comment = test
+path = /home/testmb/mydir
+read only = no
+browsable = yes
+guest ok = no
+
+#allow samba through firewall
+8 => sudo ufw allow samba
+chown 777 /home/testsamba/mydir

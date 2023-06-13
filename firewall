@@ -1,0 +1,39 @@
+# Clear existing rules and chains
+iptables -F
+iptables -X
+
+# Allow SSH from a specific IP address
+iptables -A INPUT -p tcp -s <trusted_IP_address> --dport 22 -j ACCEPT
+
+# Allow HTTP and HTTPS traffic
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT 
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Allow outgoing connections for DNS
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+
+# Allow outgoing HTTP and HTTPS connections
+iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+
+# Block incoming connections on port 25 (SMTP)
+iptables -A INPUT -p tcp --dport 25 -j DROP
+
+# Block incoming connections on port 135 (RPC)
+iptables -A INPUT -p tcp --dport 135 -j DROP
+
+#block the IP address 192.168.1.100 from accessing your server.
+iptables -A INPUT -s 192.168.1.100 -j DROP | ACCEPT
+
+#save the rules
+sudo service iptables save
+iptables-save > root/myfw
+cat /root/myfw
+
+#To list the firewall rule
+iptables -L INPUT
+iptables -L --line-numbers |more
+
+#To delete the rule with rule number 1
+iptables -D INPUT 1

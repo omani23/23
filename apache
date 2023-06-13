@@ -1,0 +1,44 @@
+
+#Install Apache serve: (first update, upgrade)
+1 => Apt-get install apache2
+#To list app
+2 => ufw app list
+
+#Check the status of firewall
+3 => ufw status
+#Enable firewall
+4 => ufw enable
+
+#Allow Apache packet
+5 => ufw allow ‘Apache’
+ => ufw status
+
+#Start Apache 
+6 => systemctl start apache2
+
+#Stop Apache 
+ => systemctl stop apache2
+
+#Restart Apache (if you made change in on place ,first it will stop the service then start it will load again and it will take long time ,it is not good idea)
+ => Systemctl restart apache2
+
+#Reload Apache (only restart the place where we change only )
+ => Systemctl reload apache2
+
+#Check if Apache start 
+ => Systemctl status apache2 
+
+#change IP address and set it for apache server
+7 => ifconfig enp0s3 192.168.7.10/24
+
+#The web page is stored in
+8 => ls /var/www/html/
+
+#Create newvi page 
+9 => nano var/www/html/mypage.html
+
+# in windows 
+IP address: 192.168.7.100
+Subnet mask: 255.255.255.0
+Default gateway: 192.168.7.1
+Preferred DNS server: 192.168.7.10 => server ip

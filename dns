@@ -1,0 +1,31 @@
+DNS
+#Install DNS serve:
+1 => Apt-get install bind9
+
+#Check service (running/active)
+2 => Systemctl status bind9
+
+#To stop running service
+  => Systemctl stop bind9
+
+#Ran the service 
+  => Systemctl start bind9
+
+#Check the file 
+3 => cat /etc/bind/
+
+#Edit the file 
+4 => nano named.conf.options
+
+5 =>
+Go to 
+//forwarders {
+//8.8.8.8; //};
+
+6 => Delete all // and change 8.8.8.8 to 0.0.0.0 
+
+#Restart DNS server
+7 => systemctl restart bind9
+
+#Check the query time(sec) from google /getting response from DNS cache 
+8 => dig google.com

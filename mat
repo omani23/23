@@ -1,0 +1,536 @@
+# Linux 2 [CH0, CH1 , CH2, CH3, CH4]
+
+# CH0: Linux Introduction
+
+### Linux important directories are given in the table below. Select the correct description for each directory given in the table below:
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e9c03f74-01ca-497b-93ca-07140b28e2bb/Untitled.png)
+
+```bash
+
+/bin   => Essential binary files (programs) that are necessary for the system to function properly, such as ls, cp, mv, etc.
+/opt   => Optional software packages that are not part of the core system, such as google chrome, word .. 
+/boot  => The boot loader files and the Linux kernel, which are essential for the system to boot up.
+/root  => The home directory of the root user.
+/dev   => Device files that represent hardware devices on the system, such as disk drives, USB devices, and network interfaces.
+/sbin  => Essential system binaries that are used for system-level tasks by superuser, such as init and shutdown.
+/etc   => System configuration files, such as network settings, user accounts, and startup scripts.
+/srv   => Data files for services provided by the system such as FTP files
+/home  => The home directories of normal users.
+/tmp   => Temporar y files created by different packages that are deleted upon reboot
+/lib   => Essential shared library files that are required by programs in /bin and /sbin.
+/usr   => programs, libraries, documentation, and other resources that are not required for system booting
+/media => The mount points for removable media such as USB drives, CD-ROMs,
+/var   => variable data files that change frequently during system operation, such as log files and spool directories.
+/mnt   => The mount points for removable devices that are mounted manually
+```
+
+The top-level directory on a Linux system is represented as ? ****
+
+**/**
+
+### Run the following command explain the output ?
+
+```bash
+		ls test* | xargs ln -s -t /home/
+
+Create symbolic links to all files in the current directory that start with "test" and place them in the "/home/" directory.
+
+| => the output of one command becomes the input of another command. It uedes to connect the two commands.
+
+xargs => construct and execute command lines based on input (left-side command)
+```
+
+---
+
+# CH1: Kernal
+
+### What is a kernal ?
+
+```bash
+It is the core of the Linux system which controls all of the hardware and software on the computer system. 
+It contains all drivers of devices to manage and handle with them such as keyborad, mouse, sound ...etc
+```
+
+### How Installing make Command?
+
+```bash
+#Add a new repository
+add-apt-repository ppa:[ubuntudesktop]/[ubuntu-make]
+
+#Update the PKG lists from the repository (sources.list)
+apt-get update 
+
+#Install ubuntu-make from repository
+apt-get install ubuntu-make
+
+```
+
+### Compiling the Kernel
+
+```bash
+1) make clean
+2) make zImage/bzImage
+3) make modules
+4) make modules_install
+```
+
+### What are the types of kernel images?
+
+```bash
+1) zImage => maximum allowed kernel size **512Kb**, so will be loaded in low memory
+
+2) bzImage => the preferred image type for larger kernels more than 512Kb, so will be loaded in high memory
+```
+
+```bash
+#1 Displaying all system information
+uname -a 
+
+Linux kali 6.0.0-kali6-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.0.12-1kali1 (2022-12-19) x86_64 GNU/Linux
+
+■ The kernel name (Linux)
+■ The system network hostname (kali)
+■ The kernel release (6.0.0-kali6-amd64)
+■ The kernel version (#1 SMP PREEMPT_DYNAMIC Debian 6.0.12-1kali1 (2022-12-19))
+■ The machine hardware name (x86_64)
+■ The processor type (x86_64)
+■ The operating system (GNU/Linux)
+```
+
+---
+
+# CH2: System Startup
+
+### Crucial terms and utilities?
+
+```bash
+
+/usr/lib/systemd/ => It is a directory that contains various system services and utilities provided by the systemd init system.
+
+/etc/inittab => it is a system configuration file used by the init process to define what processes start at which Runlevel.
+
+					NOTE:
+						**init process**  : is first process started and responsible for starting all other processes
+
+/etc/init.d/  => It is directory contains scripts used to manage services or daemons that run in the background of the system
+
+					NOTE:
+						- init.d stands for "initialization and daemon"
+						- scripts are executed by the init process
+						- /etc/init.d/apache2 [status] => dispaly status info about apache2 service 
+
+/etc/rc.d/   => it is a directory that contains scripts and configuration files for system startup and shutdown.
+
+					NOTE:
+						- rc stands for "run commands" 
+						- d stands for "directory"
+						- it contains several subdirectories, including rc[Runlevel].d, so the filenames of the scripts in it start with (S for start or K for kill)
+
+/etc/initramfs-tools/initramfs.conf => It is a configuration file containing settings that determine how **initramfs** is generated when the system boots up.
+
+/boot/grub/grub.cfg => It configuration file contains the menu entries and configuration settings for GRUB.
+
+					NOTE:
+						- .conf / .cfg => These indicate to configuration file 
+            - Not recommended to modify grub.cfg directly(manually)
+	
+
+chkconfig     => It is utility that allows users to list, control and configure the startup services and daemons in Red hat .
+systemctl     => It is utility that is used to control and manage the systemd system, services and daemons.
+
+```
+
+### System startup can be created using two utilities
+
+```bash
+initrd => It is a fixed-size block device, which requires to be 'formatted' by a filesystem such as ext2.
+
+initramfs => It is a cpio archive which is simply unpacked during boot to ramfs memory.
+```
+
+### What The Linux Boot Process steps ?
+
+```bash
+There are seven phases distinguishable during boot:
+1. Kernel loader loading, setup and execution : The boot loader loads the kernel into memory and sets up the environment for the kernel.
+2. Register setup : the kernel sets up the processor's registers, which are used to store data for the processor to access.
+3. Kernel decompression : the kernel is decompressed so that it can be loaded into memory.
+4. Kernel and memory initialization : The kernel initializes hardware and sets up the memory subsystem.
+5. Kernel setup : 
+6. Enabling of remaining CPU’s
+7. init process creation
+
+final step execute these commands in order:
+• /sbin/init
+• /etc/init
+• /bin/init
+• /bin/sh
+
+				NOTE:
+					- If none of these succeed, the kernel will panic (detects an error from which it cannot recover safely)
+					- Cause a kernel panic in order to prevent further damage or corruption to the system
+```
+
+### System startup can be created by “initd” utility. Explain “initd”?
+
+```bash
+It is the parent of all processes on Linux. It is the first process initiate and it is responsible for starting and managing all other processes
+```
+
+### In Linux environment we can work with differnet runlevels. Explain the runlevel [0, 1 ,2 ,3, 4, 5, 6] usability ?
+
+```bash
+Runlevel defines the state in which the system should operate.
+
+runlevel 0 => Shut down the system, all processes are stopped, and the system is powered off
+runlevel 1 => Single user mode, used for system maintenance, recovery, and troubleshooting purposes
+runlevel 2 => Multi-user mode that all services are running expect NFS and X11
+runlevel 3 => Multi-user text mode (CLI) with networking
+runlevel 4 => Undefined, can be used for custom purposes
+runlevel 5 => Multi-user graphical mode
+runlevel 6 => Reboot, all processes are stopped, and the system is rebooted
+
+#Display previous and current SysV runlevel
+runlevel
+N 5
+Note: 
+		N => Not available info about the previous Runlevel
+		5 => Current Runlevel
+```
+
+### What is GRUB Boot Loader ?
+
+```bash
+
+Boot loader => It is a program that loads the OS kernel and transfers execution control to it
+
+GRUB legacy / GRUB2 is installed on the hard drive usually in (MBR) or (ESP)
+```
+
+### How GRUB describe disk device names ?
+
+```bash
+[Disk_type][Disk_number][Partition_number]
+
+[Disk_type]                               [Disk_number]                                     [Partition_number]
+
+hd  => IDE hard disk                       hd0  => First hard disk                           hd0,1  => first partition on the First hard disk                          
+sd  => SATA/USB disk                       sda  => First SCSI/SATA/USB disk                  sda2   => Second partition on the First SATA/USB disk  
+fd  => floppy disk                         fd2  => Third floppy disk                         fd2,3  => Third partition on the Third floppy disk  
+cd  => CD-ROM disk                         cd3  => Fourth CD-ROM/DVD-ROM disk                cd3,4  => Fourth partition on the Fourth CD-ROM disk 
+net => network disk                        net4 => Fifth network disk                        net4,5 => Fifth partition on the Fifth network disk 
+
+		
+			NOTE: 
+					- The disk number starts from 0
+					- The partition number starts from 1
+					- full disk device name in GRUB syntax like => hd0,1
+```
+
+### What is the default file system used in Linux?
+
+```bash
+filesystem => Defines how the operating system stores data on storage devices
+
+the original/default Linux filesystem : ext (Extended filesystem) [ext2, ext3, ext4]
+
+If you plug USB into PC but it does not work, check the filesystem of USB may be the OS does not support it !!!
+```
+
+### What is rescue boot process ?
+
+```bash
+It is a procedure that enables you to access and recover your system when it's unable to boot normally
+Such as corrupt or missing system files, damaged boot sectors, or hardware failure.
+
+All filesystems are checked based on the contents of **/etc/fstab**
+
+cat /etc/fstab
+#partition   mount   point   fs   type   options   dump   fsck
+
+****#check and repair a Linux filesystem
+****fsck 
+fsck /dev/sda1
+echo $?
+
+0 - No errors
+1 - File system errors corrected
+2 - System should be rebooted
+4 - File system errors left uncorrected
+8 - Operational error
+
+More clareification :
+0: The file system check completed successfully with no errors detected and no repairs needed.
+1: The file system check completed successfully with errors detected and repairs performed.
+2: The file system check could not be performed due to a system error, such as the file system being mounted or the device being busy.
+4: The file system check could not be performed due to a usage or syntax error in the fsck command.
+8: The file system check could not be performed because the file system is in an inconsistent state that cannot be repaired.
+
+```
+
+# CH3: File System & Devices
+
+### File System & Devices
+
+```bash
+Different file systems used in Linux include ext 2/3/4, FAT 16/32/64, NTFS, LVM, and NFS.
+The Linux file system hierarchy organizes files and directories into a tree structure.
+mkfs => mkfs.ext* partitionname #command to create filesystem.
+        mkfs -t vfat partitionname  #-t file system type #vfat:formatting partitions as FAT32
+```
+
+### Mount / Umount
+
+```bash
+mount => is a command used in Linux to attach a filesystem to a directory on the file system. This allows the files in the attached filesystem to be accessible through the directory.
+#mount a file system located at /dev/sdb1 to the directory /mnt/mydisk
+=> mount /dev/sdb1 /mnt/mydisk 
+
+# unmount a file system from the directory /mnt/mydisk
+=> umount /mnt/mydisk 
+```
+
+### Swap
+
+```bash
+swap => is a space on a hard disk used as the virtual memory extension of a computer's real memory (RAM) space is used to move inactive pages of RAM to when RAM becomes full
+ 
+- Can be a partition on a hard disk or a disk file
+
+mkswap, swapon =>  create and configure swap 
+swapoff, rmswap => turned off or removed
+```
+
+Here are the syntaxes for the mentioned commands:
+
+- **mkswap**: `mkswap [option] /dev/partition`
+    - `[option]` can include:
+        - `L label`: set the label of the swap partition
+        - `U UUID`: set the UUID of the swap partition
+        - `v`: verbose output
+        - `f`: force the creation of a swap area
+- **swapon**: `swapon [option] /dev/partition`
+    - `[option]` can include:
+        - `a`: activate all swap areas listed in `/etc/fstab`
+        - `d`: deactivate the specified swap area
+        - `s`: show swap usage summary
+        - `v`: verbose output
+- **swapoff**: `swapoff /dev/partition`
+- **rmswap**: `rm /path/to/swap/file`
+
+The UUID (Universally Unique Identifier) is a unique identifier assigned to a partition on a Linux system. It is used to identify partitions and can be used instead of the partition name (/dev/sda1, for example) in configuration files, mount commands, and other system operations.
+
+### Disk check
+
+```bash
+fsck => disk checks
+- Default checks are run after 20 system reboots, but it is recommended to run fsck at least monthly.
+
+fsck partition or fsck -p partition.
+```
+
+The syntax of the `fsck -p /dev/sdb8`  command is `fsck [options] partition`. 
+
+The options can include 
+
+`-p` to automatically repair any issues detected without prompting the user
+
+`-f` to force the check even if the file system appears clean, and 
+
+`-y` to automatically answer "yes" to any prompts.
+
+# CH4: Advanced Storage Device Administration
+
+### **RAID**
+
+```bash
+RAID => Redundant Array of Inexpensive Disks
+- Combines multiple disk drives into an array that appears as a single logical storage unit.
+Different RAID levels 
+1- disk striping (RAID Level 0)
+2- disk mirroring (RAID Level 1)
+3-striping with distributed parity (RAID Level 4/5).
+4- Linear RAID
+
+```
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/79ad5252-8ed5-43a4-beac-e56b50704078/Untitled.png)
+
+### **Logical Volume Management**
+
+```bash
+LVM => Logical Volume Management
+- Deploying logical storage rather than physical storage.
+
+- Using Logical Volume Management (LVM) to manage storage:
+A physical disk is divided into one or more physical volumes (PVs). 
+These PVs can then be combined to create Logical Volume Groups (VGs).
+
+```
+
+[Firas_16S17204_LVM.docx](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/eaac0f56-9f4c-41e5-8bfc-b1f377f86aa3/Firas_16S17204_LVM.docx)
+
+The `df -h` command displays the disk space usage for all mounted file systems in human-readable format.
+
+```
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        20G  4.8G   15G  25% /
+tmpfs           3.9G     0  3.9G   0% /dev/shm
+/dev/sda3       197G   70M  187G   1% /mnt/data
+```
+
+## Chapter 5
+Basic Network Configuration:
+• IP Address & Subnet Mask: Setting up the unique identifier for devices and defining the network 
+boundaries.
+• Working With VLSM: Optimizing IP address allocation within a network using Variable Length 
+Subnet Masking.
+• Default Gateway: Configuring the router or device that connects your network to other networks 
+or the internet.
+• Route: Setting up routes to determine how network traffic is directed.
+Configuring Network Interface:
+• Modern Kernel Support: Most network devices are supported by modern kernels, but 
+configuration is still necessary.
+• IP Address Assignment: Assigning IP addresses (IPv4, IPv6, or both) to network devices.
+• Gateway/Routers: Specifying the gateways or routers for accessing other networks.
+• Default Route: Setting the default route for proper network communication.
+Tools for Configuration:
+• ifconfig: A tool used to configure network interfaces, assign IP addresses, and manage network 
+parameters.
+• route: A command-line tool for configuring network routing tables.
+Chapter 6: System Maintenance
+Importance of System Backup
+Data backup is easy to do and can save time while ensuring data security in case of a disaster.
+Types of System Backup
+Local Backup:
+• Backup on disks, tapes, or physical media stored on-site or nearby.
+• Faster backup and restore times.
+• Provides greater control over data access.
+• Vulnerable to threats at the same physical location as the source.
+Online / Cloud Backup:
+• Remote backup managed by a third party.
+• Easily scalable and accessible from anywhere.
+• Off-site protection against on-site disasters.
+• Slower than local backup.
+• Security concerns regarding data being in the hands of a third party.
+Data to Include in System Backup
+Important Data:
+• User's home directory.
+• User's emails.
+• Any other specified data.
+Determining Backup Schedule
+Depends on organization policy and type of backup.
+Backup frequency options:
+• Daily.
+• Weekly.
+• Real-time.
+Methods for System Backup
+Different utilities available:
+• rsync: Low-bandwidth utility for file synchronization.
+• tar: Combines multiple files and directories into a continuous stream.
+• dd: Transfers whole disks/partitions to files or other disks/partitions.
+Chapter 7: DNS
+DNS: The domain name system (DNS) is a distributed hierarchical database that stores information about 
+IP addresses and fully qualified domains.
+The primary purpose of DNS is to translate computer names into IP addresses.
+Hierarchical Structure:
+DNS has a hierarchical structure.
+This structure enables efficient management and resolution of domain names.
+DNS Queries Process:
+DNS queries follow a specific process.
+When a user enters a domain name, the DNS server looks up the corresponding IP address associated 
+with that domain.
+Roles in DNS:
+Primary DNS server: Responsible for managing and maintaining the authoritative zone data for a domain.
+Secondary DNS server: Acts as a backup to the primary server, providing redundancy and improving fault 
+tolerance.
+Slave DNS server: Receives zone transfers from the primary server and can serve as a backup for the 
+primary server.
+Caching-only DNS server: Focuses on caching DNS records to improve response time for future queries.
+Chapter 7: Apache HTTP Server
+Apache is the most widely used web server in the world.
+It provides a range of powerful features.
+These features include dynamically loadable modules, robust media support, and integration with other 
+popular software.
+Chapter 7: NFS
+NFS facilitates the sharing of directories and files among Linux clients.
+It operates through a client-server model.
+Shared Directory Creation:
+The NFS server creates a shared directory where files can be added.
+This directory serves as a central location for shared data.
+Client Access:
+Client systems can mount the shared directory on the NFS server.
+By mounting, clients gain access to the files stored in the shared directory.
+Benefits of NFS:
+• NFS provides a space-saving solution for sharing data.
+• It avoids duplicating files across multiple client systems.
+• NFS is particularly useful when clients are running out of storage space.
+By implementing NFS, Linux clients can efficiently share data, reduce storage usage, and improve 
+collaboration in a networked environment.
+Chapter 7: Samba Server
+Allows file sharing across different operating systems.
+Provides access to desktop files from a laptop.
+Enables sharing files with Windows and Mac OS users.
+Components of Samba Server:
+1. smbd:
+•Provides SMB service (file sharing and printing).
+•Can also act as a Windows domain controller.
+2. nmbd:
+•Provides NetBIOS name service.
+•Listens for name-server requests.
+•Allows the Samba server to be found by other computers on the network.
+What Can Samba Do?
+•Samba Server has various capabilities, including:
+•Serving directory trees and printers to Linux, UNIX, and Windows clients.
+•Assisting in network browsing, with or without NetBIOS.
+•Authenticating Windows domain logins.
+•Acting as a Windows NT-style Primary Domain Controller (PDC).
+•Acting as a Backup Domain Controller (BDC) for a Samba-based PDC.
+•Acting as an Active Directory domain member server.
+•Joining a Windows NT/2000/2003 PDC.
+Chapter 9: Firewall Installation, Configuration & Port Security
+Introduction to Firewalls
+A firewall is a security mechanism that protects your internal network from viruses, hackers, and 
+cybercriminals.
+It acts as a barrier between your internal network and the outside internet connection.
+It filters and controls data traffic, allowing only authorized connections to enter the internal network.
+How a Firewall Works
+Stealth Mode - Discarding Pings:
+Configuring the firewall to not respond to ping requests improves anonymity and security.
+Ping requests can be used by attackers to identify vulnerable systems.
+Port Forwarding and Blocking:
+Port blocking is a fundamental firewall security measure to protect systems.
+It involves blocking specific ports that you don't want to be open to the outside world.
+Port forwarding is a useful tool that allows specific connections to be forwarded to internal systems.
+Packet Filtering:
+• Advanced mechanism for providing security.
+• Filters data packets based on specified rules.
+• Allows or disallows packets based on filtering rules.
+• Can be used to block suspicious IP addresses and control network access.
+IP Tables:
+iptables is a tool used to manage packet filtering and NAT (Network Address Translation) rules.
+It is included with all Linux distributions and helps in managing the Linux firewall effectively.
+iptables structure:
+• Tables: Filter, NAT, Mangle, Raw.
+• Chains: Built-in and user-defined.
+• Rules: Criteria and targets (ACCEPT, DROP, QUEUE, RETURN).
+Built-in Tables in iptables:
+Filter Table:
+• INPUT chain: Incoming packets to the firewall.
+• OUTPUT chain: Outgoing packets from the firewall.
+• FORWARD chain: Packets routed through the firewall.
+NAT Table:
+• PREROUTING chain: Alters packets before routing (DNAT - Destination NAT).
+• POSTROUTING chain: Alters packets after routing (SNAT - Source NAT).
+• OUTPUT chain: NAT for locally generated packets.
+Mangle Table:
+• Specialized packet alteration, including QOS (Quality of Service) bits in the TCP header.
+• Contains PREROUTING, OUTPUT, FORWARD, INPUT, and POSTROUTING chains.
+Raw Table:
+• Configuration exemptions.
+• Contains PREROUTING and OUTPUT chains.
+IPTABLES RULES:
+• Rules contain criteria and targets.
+• If criteria are matched, it follows the rules specified in the target.
+• Special values for the target: ACCEPT, DROP, QUEUE, RETURN.

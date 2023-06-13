@@ -1,0 +1,68 @@
+LVM => Logical Volume Management
+- Deploying logical storage rather than physical storage.
+
+- Using Logical Volume Management (LVM) to manage storage:
+A physical disk is divided into one or more physical volumes (PVs). 
+
+These PVs can then be combined to create Logical Volume Groups (VGs).
+
+----------------------------------------------------------------------
+1) Add a new hard disk of 50 GB in your system. The hard disk name must be the same as your name.
+
+2) Create an extended partition of 50 GB.
+Fdisk 
+=> fdisk /dev/sdb
+=> n > e > Enter in space
+
+3)Create four (4) logical partitions of 10 GB each.
+=> fdisk /dev/sdb
+=> n > 
+
+4) Create physical partition on second, third and fourth partitions.
+#To show all partition
+=> fdisk /dev/sdb > p 
+
+#Create physical partition
+in same menu => Pvcreate /dev/sdb5 /dev/sdb6 /dev/sdb7 /dev/sdb8
+=> w > to save
+
+5) Verify either physical volumes are created or not.
+in same menu => pvdisplay
+
+6) Combine second and third partitions into a group named “YourFirstName”.
+ => vgcreate “test” /dev/sdd6  /dev/sdd7
+
+7) Verify either volumes group is created or not.
+vgdisplay |more OR vgdisplay test
+
+8) Drive logical volume named "YourLastName" of 15GB from a group.
+ => lvcreate –n “alawaidi”   --size +15G /dev/test
+
+9) Verify either logical volume is created or not.
+ => lvdisplay
+
+10)Format logical volume with Linux default file system.
+ => Mkfs.ext4 /dev/test/testt 
+
+11) Make newly created logical volume usable for the uses.
+#command displays the disk space usage for all mounted file systems in human-readable format.
+ => df -h
+ => Mkdir newdisk 
+ => Mount /dev/test/testt  /root/newdisk/
+ => df-h
+
+12) Add 3 GB more in the newly created logical volume.
+ => Lvextend  –L +3G /dev/test/testt 
+#Update the partition table without formatting.
+ => Resize2fs /dev/test/testt
+
+14 )Add new physical volume (fourth partition) to the group.
+ => Pvcreate /dev/sdd8 
+ => vgextend “test”  /dev/sdd8
+
+15) Verify either new volume is added to the volume group or not.
+vgdisplay
+
+16) Remove 2 GB from the logical volume.
+=> Lvreduce -L -2G /dev/test/testt
+=> Resize2fs /dev/test/testt

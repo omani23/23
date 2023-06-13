@@ -1,0 +1,63 @@
+Backup
+=> mkdir /root/hct/
+ => cp /etc/*.conf /root/hct/
+ => tar -cvpf name.tar /root/hct/*
+
+Restore
+ => tar -xvpf /root/name.tar
+
+Options:
+-c (create bkup)
+-x (restore)
+-f (file)
+-v(verbos mode)-name of files that take as bkup/list of files 
+-p(preseve per/permission)
+-z (zip)
+to create backup:
+tar -c(other option) filenamebkup.tar source
+to make bkup in spesific folder
+ex:
+#mkdir imdata
+==>copy same files from etc into this folder
+#cp /etc/*.conf /root/imdata/
+==>to check
+#ls /root/imdata/ 
+==> to copy for loop
+#cp /dev/loop* /root/imdata/ 
+==> to check the backup
+#ls /root/imdata/ 
+to make bk up:
+#tar -cpvf mybackup.tar /root/imdata/*
+==> red color mybkup.tar (mean 1 bkup is created)
+#ls
+if i want to see the list of file as bkup +no list for process
+#tar -cpf 2mybkup.tar /root/imdata/*
+if i don't want to take permission:
+#tar -cf 3mybkup.tar /root/imdata/*
+if i do ls -l: i will see many backup files الحجم .مع
+#ls -l 
+if i want to comprese the file of backup:
+#tar -cpvzf mybkup.tar.gz /root/imdata/*
+if i want to see size of compere the size:
+#ls -l
+remove data folder:
+#rm -rf impData/
+to check:
+#ls /root/impData
+-to retrive/restore the data from the bkup:
+#cd ..
+#tar -xpvf /root/mybkup.tar
+to check the data that is restored:
+#cd /root/
+#ls -l /root/impData/
+to make files:
+#cat > abc.txt
+jskdnakjsdnj
+^d
+show abc.txt
+#ls -l 
+make new bkup file with standard format:it will specify date and time (descripte date and time)u have 
+bkup until 1pm
+#tar -cf confbkup_10032021_01pm.tar /root/imdata/*
+#ls -l
+```

@@ -1,0 +1,56 @@
+#install nfs kernal
+1 => apt-get install nfs-kernel-server
+
+#making directory to be share later
+2 => mkdir /mnt/server_share
+
+#change the ownership to nobody:nogroup,
+3 => chown nobody:nogroup /mnt/server_share
+
+#To change the permissions to 777 | 4:r , 2:w , x:1 
+4 => chmod 777 /mnt/server_share
+
+#file is used by the NFS server to define the directories that are exported and the options associated with them.
+5 => nano /etc/exports
+
+#add this line to /etc/exports
+6 => /mnt/server_share 192.168.7.10/24(rw,sync)
+
+#change IP address of the machine 
+7 => ifconfig enp0s3 192.168.7.10/24
+
+#enable firewall
+8 => ufw enable
+
+#exportfs -a, it scans the /etc/exports file and exports all the directories listed in it.
+9 => exportfs -a
+
+#restart the NFS (Network File System) server service
+10 => systemctl restart nfs-server
+====> systemctl restart nfs-kernel-server 
+
+#add a rule to the UFW firewall configuration that allows incoming NFS traffic from the specified subnet
+11 => ufw allow from 192.168.7.0/24 to any port nfs
+ufw status
+
+------------------------------
+in client
+
+#install the NFS (Network File System) client package
+1 => apt install nfs-common
+
+#directory to mount NFS shares from the server
+2 => mkdir /mnt/client_share
+
+#change IP address of the machine 
+3 => ifconfig enp0s3 192.168.7.20/24
+
+#mount the NFS share from the server at 192.168.7.10 and the directory /mnt/server_share onto the local directory /mnt/client_share.
+4 => mount 192.168.7.10:/mnt/server_share /mnt/client_share
+
+#For testing 
+cd /mnt/client_share
+echo "Hi" > clientfile.txt
+
+#in server
+ls -l /mnt/server_share

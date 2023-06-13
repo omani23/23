@@ -1,0 +1,51 @@
+
+IP address add 192.168.1/24 dev enp0s3
+IP addr show
+route
+
+#Assign an IP address and subnet mask to the network interface
+ => ifconfig enp0s3 *.*.*.* netmask *.*.*.*
+
+#Bring the network interface up or down:
+ => ifconfig enp0s3 up/down
+
+#Add a route for a specific network:
+ => route add -net 172.16.0.0 netmask 255.255.255.0 gw gwname
+
+#Add a default gateway:
+ => route add default gw gwname
+
+#Change ip 
+ => ifconfig enp0s3 192.168.7.10/24
+
+Note: The network name "default" is a shorthand for 0.0.0.0, which represents the default route.
+
+#ping 172.16.0.50
+#ctrl +c > cancel
+disable/enaple
+#ifconfig enp0s3 down
+#ifconfig enp0s3 up
+show all i/f
+#ifconfig -a
+Gateway
+for default n/w:
+#route add 0.0.0.0 gw 10.0.2.1(IP)
+#route add default gw 10.0.2.1(IP)
+Add specific n/w:
+#route add -net 10.0.2.0 netmask 255.255.255.0 gw 
+10.0.2.1
+Delete /remove specific n/w:
+#route del -net 10.0.2.0 netmask 255.255.255.0 gw 
+10.0.2.1
+routing table
+#route -n
+get all info about command 
+#man route
+#man ifconfig
+to change ip manually: trun off dhcp:
+cat /etc/netplan/50-cloud-init.yam1
+vi /etc/netplan/50-cloud-init.yam1
+i
+make it false
+iwq
+-----------------------
